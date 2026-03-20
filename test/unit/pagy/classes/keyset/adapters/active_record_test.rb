@@ -33,6 +33,14 @@ describe 'Pagy::Keyset::Adapters::ActiveRecord Specs' do
       keyset   = host.send(:extract_keyset)
       _(keyset).must_equal({ name: :asc })
     end
+
+    it 'extracts the first ordering only' do
+      # SELECT "pets".* FROM "pets" ORDER BY "pets"."id" DESC, "pets"."id" ASC
+      # Second clause is redundant but first clause takes presidence.
+      host.set = Pet.order(id: :desc).order(id: :asc)
+      keyset   = host.send(:extract_keyset)
+      _(keyset).must_equal({ id: :desc })
+    end
   end
 
   describe '#keyset_attributes_from' do
