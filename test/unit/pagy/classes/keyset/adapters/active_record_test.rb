@@ -35,8 +35,7 @@ describe 'Pagy::Keyset::Adapters::ActiveRecord Specs' do
     end
 
     it 'extracts the first ordering only' do
-      # SELECT "pets".* FROM "pets" ORDER BY "pets"."id" DESC, "pets"."id" ASC
-      # Second clause is redundant but first clause takes presidence.
+      # The second clause is redundant, however the first one should take precedence.
       host.set = Pet.order(id: :desc).order(id: :asc)
       keyset   = host.send(:extract_keyset)
       _(keyset).must_equal({ id: :desc })
